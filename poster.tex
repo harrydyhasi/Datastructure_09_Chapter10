@@ -1,0 +1,282 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%
+% This is a LaTeX file for an A3 poster.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Asymptotic behavior of solutions to the generalized Becker-Döring
+% equations for general initial data.
+%
+% Poster for the HYKE-3 meeting in Rome, 13-15 April 2005.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+% To modify the size of the page:
+\usepackage[dvips,a3paper,landscape,centering,margin=2cm]{geometry}
+\usepackage{multicol}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage{mathptmx}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage{graphicx}           % Include figure files.
+
+% Colors
+% -------
+\definecolor{azulillo}{rgb}{0.8,0.85,1}
+\definecolor{marronrp3}{rgb}{.9,.9,.7}
+\definecolor{salmon}{rgb}{1,.9,.8}
+\definecolor{rojo}{rgb}{.6,.1,0}
+
+\pagestyle{empty}
+
+\def\to{\rightarrow}
+
+% Hyphenation
+\hyphenation{coa-gu-la-tion frag-men-ta-tion}
+
+% ===========================================================================
+
+\title{}
+\author{}
+\date{}
+
+\begin{document}
+%\maketitle
+
+\begin{center}
+  
+  %&
+  \begin{minipage}{.6\linewidth}
+    \begin{center}
+      \Huge \textbf{Chapter 10: Addition Machines\\}
+      \vspace{.5cm}
+      \small \textit{[Written with Robert W. Floyd. Originally published in SIAM Journal on Computing 19 (1990), 329-340.]\\}
+    \end{center}
+  \end{minipage}
+  %&
+
+\end{center}
+
+\vspace{1cm}
+
+% ---------------------------------------------------------------------------
+
+\setlength{\columnsep}{1cm}
+\begin{multicols}{3}
+\begin{center}
+    
+    It is possible to compute $gcd(x,y)$  efficiently with only $O(logxy)$   additions and subtractions, when three arithmetic registers are available but not when there are only two.  Several other functions, such as $x^y\; mod \;z$, are also efficiently computable in a small number of registers, using only addition, subtraction, and comparison.
+\end{center}
+\noindent
+\fcolorbox{black}{salmon}{
+  \begin{minipage}[t]{.96\linewidth}
+    \vspace{.05cm}
+      \begin{center}
+      \section*{\Large Main Algorithms}
+      \end{center}
+       An addition machine is a computing device with a finite number of registers, limited to the following six types of operations:
+       \begin{flushleft}
+       
+        \hspace{1cm}\textbf{read} $x$\hspace{1cm}	\left \{ {input\; to\; register\; x} \right \}
+        
+        \hspace{1cm}x \leftarrow  y\hspace{1.105cm}	\left \{ {copy\; register\; y\; to\; register\; x} \right \}
+        
+        \hspace{1cm}x \leftarrow  x + y\hspace{.55cm} \left \{ { add\; register\; y\; to\; register\; x} \right \}
+
+        \hspace{1cm}x \leftarrow  x - y\hspace{.55cm} \left \{ { subtract\; register\; y\; from\; register\; x} \right \}
+        
+        \hspace{1cm}\textbf{if}\; x \geq  y\hspace{.75cm}	\left \{ { compare\; register\; x\; to\; register\; y} \right \}
+        
+       \hspace{1cm}\textbf{write}\; x\hspace{.703cm} \left \{ output\; from\; resister\; x \right \}
+        \end{flushleft}
+  \end{minipage}
+}
+\\
+
+The register contents are assumed  to  belong to  a  given set  A, which is an additive subgroup of the real numbers.  If  A is the set  of all integers, we say the  device is an  integer addition machine; if A is the  set  of all real numbers, we say the device is a real addition machine.\\
+
+We will consider how efficiently an integer addition machine can do operations such as multiplication, division, greatest common divisor, exponentiation, and sorting. We will also show that any addition machine with at least six registers can compute the ternary  operation x[y/z] with reasonable efficiency, given x, y, z \in A\; with\; z $\neq$ 0.
+
+
+
+
+% ---------------------------------------------------------------------------
+
+\vspace{.2cm}
+
+\noindent
+\colorbox{marronrp3}{
+  \begin{minipage}[t]{.96\linewidth}
+    \vspace{.2cm}
+    \section*{Remainder}
+    As a first example, consider the calculation of\\
+    x\,mod\,y = 
+    \begin{cases}
+     &  x - y[x/y],\,\,\,  if\,\, y \neq 0; \\ 
+     &  x,\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\,  if\,\,y=0;
+    \end{cases}
+    \\ This binary operation is well defined on any additive subgroup A of the reals, and we can easily compute it on an addition machine as follows:\\
+    
+    \hspace {.5cm}\textbf{read}\;  x; \textbf{read}\;  y;  z \leftarrow  z -  z;
+    
+    \hspace {.5cm}\textbf{if}\;y\geq z \; \textbf{then}
+    
+    \hspace {1cm}\textbf{if}\;  z \geq  y\; \textbf{then}\; \left \{y = 0, do\; nothing  \right \}
+    
+    \hspace {1cm}\textbf{else if } x \geq  z\; \textbf{then } \textbf{while } x \geq  y\; \textbf{do } x \leftarrow  x - y
+    
+    \hspace {1.5cm}\textbf{else repeat } x \leftarrow  x + y\; \textbf{until } x \geq  z
+    
+    \hspace {.5cm}\textbf{else if } z\geq   x\; \textbf{then while } y \geq  x\; \textbf{do }	x \leftarrow x - y
+    
+    \hspace {1.5cm}\textbf{else repeat } x \leftarrow  x + y \;\textbf{until } z \geq x;
+    
+    \hspace {.5cm}\textbf{write } x.\\
+    (There is implicitly a finite-state control. A pidgin Pascal program such as this one is easily convert ed to other formalisms).
+        \vspace{.2cm}
+      \end{minipage}
+    }
+    
+
+
+\section*{A Fibonacci Method}
+
+Remainders can, however, be computed with the desired efficiency $O(log(x/y))$ if we implicitly use the Fibonacci representation of $[x/y]$ instead of the binary representation. Define Fibonacci numbers as usual by\\
+\begin{center}
+    $F_{0}=0;\; F_{1}=1;\; F_{n-1}+F_{n-2}\,, \hspace{.5cm} for\;\; n\geq 2$\\
+\end{center}
+Every non-negative integer $n$ can be uniquely represented in the form
+\begin{center}
+    $n=F_{l_{1}}+F_{l_{2}}+...+F_{l_{t}}\,, \hspace{.5cm} l_{1}\gg l_{2}\gg...\gg l_{t}\gg 0,$
+\end{center}
+where $t \geq  0$ and $l \gg  l'$ means that $l - l'\geq 2$. If $n > 0$, this representation can be found by choosing $l_{1}$ such that
+\begin{center}
+    $F_{l_{1}}\leq n< F_{l_{1}+1}\,,$
+\end{center}
+so that $n-F_{l_{1}}<  F_{l_{1}+1}-F_{l_{1}}=F_{l_{1}-1},$ and by writing
+\begin{center}
+    $n=F_{l_{1}}+$ (Fibonacci representation of $n-F_{l_{1}}$).
+\end{center}
+We shall let\\
+\begin{center}
+    $\lambda n=l_{1} \hspace{.5cm} and \hspace{.5cm}\; \upsilon n=t$
+\end{center}
+denote respectively the index of the leading term and the number of terms, in the Fibonacci representation of n. By convention, $\lambda0=1$.\\
+
+\hspace{.5cm}Fibonacci numbers are well suited to addition machines because we can go from the pair $\left \langle F_{l},F_{l+1} \right \rangle$ up to the next pair $\left \langle F_{l+1},F_{l+2} \right \rangle$ with a single addition, or down to the previous pair $\left \langle F_{l-1},F_{l} \right \rangle$ with a single subtraction. Furthermore, Fibonacci numbers grow exponentially, about 69 \; as fast as powers of 2. They have been used as power-of-2 analogs in a variety of algorithms (see, for instance, "Fibonacci numbers" in the index to), and in Matijasevic's solution to Hilbert's tenth problem.
+\noindent
+\begin{center}
+  \noindent
+  \colorbox{marronrp3}{
+    \begin{minipage}[t]{.96\linewidth}
+    \vspace{.2cm}
+    \section*{Multiplication and Division}
+    We can use essentially the same idea to compute the ternary operation $x[y/z]$ efficiently on any addition machine. This time we accumulate multiples of $x$ as we discover the Fibonacci representation of $[y/z]$:\\
+    
+    \hspace {.5cm} \textbf{read} $x$; \textbf{read} $y$; \textbf{read} $z$; \left \{ assume\; that y\geq 0\; and\; z>0  \right \} 
+    
+    \hspace {.5cm} $\omega \leftarrow 0$;
+    
+    \hspace {.5cm} \textbf{if} $y\geq z$ \textbf{then}
+    
+    \hspace {1cm} \textbf{begin} $l\leftarrow 1$;
+    
+    \hspace {1cm} \textbf{repeat} $l\leftarrow l+1$ \textbf{until} $y< zF_{l+1}$;
+    
+    \hspace {1cm} \textbf{repeat if} $y\geq zF_{l+1}$ \textbf{then} $\left \langle \omega,y \right \rangle\leftarrow \left \langle \omega+xF_{l},y-zF_{l} \right \rangle$;
+    
+    \hspace {1.5cm} $l\leftarrow l-1$;
+    
+    \hspace {1cm} \textbf{until} $l=1$;
+    
+    \hspace {1cm} \textbf{end};
+    
+    \hspace {.5cm} \textbf{write} $\omega$.
+    \vspace {.2cm} 
+    \end{minipage}
+  }
+\end{center}
+
+
+
+
+% ---------------------------------------------------------------------------
+  
+\section*{Greatest Common Divisors}
+We can therefore use our method for computing $x\; mod\; y$ to calculate $gcd(x, y)$ on an integer addition machine:\\
+    
+    \textbf{read} $x$; \textbf{read} $y$; $\left \{ assume\; that\; x>0 \; and \; y\geq 0 \right \}$
+    
+    $z\leftarrow y;\;\; z\leftarrow z+z;$
+    
+    \textbf{while not} $y\geq z$ \textbf{do} \left \{ equivalently,\; y > 0,\; since\; z=2y \right \}
+    
+    \hspace {.5cm}\textbf{begin while} $ x\geq z$ \textbf{do} \left \langle y,z \right \rangle\leftarrow \left \langle z,y+z \right \rangle;
+    
+    \hspace {.5cm}\textbf{repeat if} $ x\geq y$ \textbf{then} x\leftarrow x-y;
+    
+    \hspace {1cm}\left \langle y,z \right \rangle\leftarrow \left \langle z-y,y \right \rangle;
+    
+    \hspace {.5cm}\textbf{until }$ y\geq z$;
+    
+    \hspace {.5cm}\left \langle x,y \right \rangle\leftarrow \left \langle y,x \right \rangle; z\leftarrow y; z\leftarrow z+z;
+    
+    \hspace {.5cm}\textbf{end};
+    
+    \textbf{write} \;$x$.\\\\
+(Here\; the\; operation\; $\left \langle x,y \right \rangle \leftarrow \left \langle y,x \right \rangle$ should not really be performed; it means that the roles of registers $x$ and $y$ should be interchanged. The implementation jumps between six copies of this program, one for
+each permutation of the register names x, y, z.)\\
+
+
+\noindent
+\colorbox{marronrp3}{
+  \begin{minipage}[t]{.96\linewidth}
+    \vspace{.2cm}
+    \section*{Stacks and Sorting}
+    \vspace{.05cm}\\
+    
+    \hspace{.5cm}Euclid's algorithm  defines a  one-to-one correspondence  between  pairs of  relatively  prime  positive integers  $\left \langle x,y \right \rangle$
+  with  $x>y$  and  sequences of positive integers $ \left \langle q_{1},...,q_{m} \right \rangle$  where each $q_{1}\geq 1 $ and $ q_{m}\geq 2$. We can  push a new integer q onto the  front of such a sequence by setting
+$\left \langle x,y \right \rangle\leftarrow \left \langle qx+y,x \right \rangle$; we can pop $q_{1} = \left \lfloor x/y \right \rfloor$ from the front by setting $\left \langle x,y \right \rangle\leftarrow \left \langle y,x\; mod \; y \right \rangle$.\\
+
+\hspace{.5cm}Therefore an integer addition machine can represent a stack of arbitrary depth in two of  its  registers. The  operation of pushing or  popping a positive integer q can be done with $O(logq)$ operations, using a few auxiliary registers.\\
+
+\hspace{.5cm}Here, for example, is the  outline of an  integer  addition  program that reads a sequence of positive integers followed by zero and writes out those positive integers in reverse order:
+
+\hspace{.5cm}$\left \langle x,y \right \rangle\leftarrow \left \langle 2,1 \right \rangle$; \hspace{.5cm} \left \{ the\; empty\; stack \right \}
+
+\hspace{.5cm}\textbf{repeat read } $q$;
+
+\hspace{1cm}\textbf{if }$ q \geq 1$ \textbf{then }$ \left \langle x,y \right \rangle\leftarrow \left \langle qx+y,x \right \rangle;
+
+\hspace{.5cm}\textbf{until not } q\geq 1$;
+
+\hspace{.5cm}\textbf{repeat }$ \left \langle q,x,y \right \rangle\leftarrow \left \langle \left \lfloor x/y \right \rfloor,y,x\; mod \; y \right \rangle$;
+
+\hspace{1cm}\textbf{if }$ y\geq 1$ \textbf{then write} $q$;
+
+\hspace{.5cm}\textbf{until not} $ y\geq 1$.
+    \\\hspace{.05cm}
+  \end{minipage}
+}
+
+\vspace{.5cm}
+This program uses the algorithms for multiplication and division shown earlier. The total running time to reverse the input $\left \langle q_{1},q_{2},...,q_{m},0 \right \rangle$
+ is $O(m+log q_{1}q_{2}...q_{m})$.
+ 
+\vspace{.5cm}We can sort a given list of positive integers $\left \langle q_{1},q_{2},...,q_{m} \right \rangle$  in  a similar way, using the  classical algorithms for merge sort ing with  th ree or more magnetic tapes that can be "read backwards". The  basic operations  required  are  esseptially  those of a  stack; so we can  sort  in $O((m+log q_{1}q_{2}\;...\;q_{m})\;log\; m)$  steps if  there  are  at  least 12 registers.\\
+
+% ---------------------------------------------------------------------------
+%
+\small
+
+
+
+\end{multicols}
+
+\end{document}
